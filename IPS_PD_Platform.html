@@ -1,0 +1,848 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IPS Professional Development Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#15233B; --navy2:#1F3A5F; --blue:#2E6FB0; --accent:#D9442C;
+    --paper:#F6F3EE; --card:#FFFFFF; --ink:#1B2334; --muted:#5C6573; --line:#E7E1D6;
+    --teach:#4E7A3A; --teach-bg:#EAF1E3; --core:#B05A22; --core-bg:#F8E9DD;
+    --shadow:0 1px 2px rgba(21,35,59,.06),0 8px 24px rgba(21,35,59,.06);
+    --font-d:'Newsreader',Georgia,'Times New Roman',serif;
+    --font-b:'Hanken Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --r:12px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:var(--font-b);background:var(--paper);color:var(--ink);line-height:1.5;
+    background-image:radial-gradient(1200px 400px at 80% -10%, #eef1f6 0%, rgba(238,241,246,0) 60%);}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 22px 80px}
+
+  /* header */
+  header{background:linear-gradient(180deg,var(--navy) 0%,var(--navy2) 100%);color:#fff;
+    border-bottom:3px solid var(--accent)}
+  .head-in{max-width:1120px;margin:0 auto;padding:22px 22px 18px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .brand{font-family:var(--font-d);font-weight:600;font-size:30px;letter-spacing:.2px;line-height:1.05}
+  .brand small{display:block;font-family:var(--font-b);font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#9fb4d4;margin-bottom:6px}
+  .who{font-size:13px;color:#c9d6ea;text-align:right}
+  .who input{font:inherit;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff;
+    border-radius:8px;padding:6px 9px;margin-top:4px;width:190px}
+  .who input::placeholder{color:#9fb4d4}
+
+  /* tabs */
+  .tabs{display:flex;gap:4px;max-width:1120px;margin:0 auto;padding:0 22px;position:sticky;top:0;z-index:20;
+    background:var(--paper);border-bottom:1px solid var(--line)}
+  .tab{appearance:none;border:0;background:none;cursor:pointer;font:inherit;font-weight:600;color:var(--muted);
+    padding:15px 18px 13px;border-bottom:3px solid transparent;display:flex;align-items:center;gap:9px;transition:.18s}
+  .tab .n{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#e4ddd0;color:var(--muted);font-size:12px;font-weight:700}
+  .tab:hover{color:var(--ink)}
+  .tab.active{color:var(--navy);border-bottom-color:var(--accent)}
+  .tab.active .n{background:var(--navy);color:#fff}
+
+  .panel{display:none;animation:rise .35s ease both}
+  .panel.active{display:block}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  h2.sec{font-family:var(--font-d);font-weight:600;font-size:24px;margin:30px 0 4px}
+  .lede{color:var(--muted);max-width:760px;margin:0 0 18px;font-size:14.5px}
+  .agent-note{font-size:12.5px;color:var(--muted);background:#fff;border:1px dashed var(--line);border-radius:8px;padding:8px 12px;display:inline-block}
+  details.ex{margin:2px 0 4px}
+  details.ex>summary{cursor:pointer;color:var(--accent);font-size:12px;list-style:none;display:inline-block}
+  details.ex>summary::-webkit-details-marker{display:none}
+  .ex-body{font-size:12.5px;color:var(--muted);font-style:italic;background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin-top:5px;line-height:1.55}
+  label.supp{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink);margin-top:10px;font-weight:500;cursor:pointer}
+  label.supp input{width:15px;height:15px;flex:none}
+  .supp-hint{display:block;font-size:12px;color:var(--accent);margin-top:5px}
+  .intake{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:18px}
+  .intake-h{font-family:var(--font-d);font-weight:600;font-size:16px;color:var(--navy);margin-bottom:10px}
+  .intake-row{display:flex;gap:14px;flex-wrap:wrap}
+  .intake-row .field{flex:1;min-width:180px}
+  .intake-note{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.5}
+  .mm-note{display:block;font-size:12px;color:#9a6700;background:#fff7e6;border:1px solid #f0d68a;border-radius:7px;padding:7px 10px;margin-top:9px}
+  @media print{
+    nav.tabs,.btn,.toolbar,.agent-note,details.ex,.intake-note,.supp-hint,#fileinput,.progress{display:none!important}
+    .panel{display:block!important;animation:none!important;page-break-before:always}
+    #tab1{page-break-before:avoid}
+    body{background:#fff}
+    .card,.intake,.pd,table,.goals{box-shadow:none!important}
+    textarea,input,select{border:1px solid #ddd!important;background:#fff!important;color:#000!important}
+    textarea{height:auto!important;min-height:0!important;overflow:visible!important;resize:none}
+    a[href]:after{content:""}
+  }
+
+  /* progress bar */
+  .progress{position:sticky;top:50px;z-index:10;background:rgba(246,243,238,.92);backdrop-filter:blur(6px);
+    display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:8px;flex-wrap:wrap}
+  .bar{flex:1;min-width:180px;height:9px;border-radius:6px;background:#e6dfd2;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--navy));transition:width .4s}
+  .chip{font-size:12.5px;font-weight:600;color:var(--muted)}
+  .chip b{color:var(--navy)}
+
+  /* domain + cards */
+  .domain{margin-top:26px}
+  .domain-h{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;padding:6px 0}
+  .domain-h h3{font-family:var(--font-d);font-weight:600;font-size:19px;margin:0;color:var(--navy)}
+  .domain-h .caret{margin-left:auto;color:var(--muted);transition:.2s;font-size:13px}
+  .domain.collapsed .caret{transform:rotate(-90deg)}
+  .domain.collapsed .cards{display:none}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);
+    margin:12px 0;overflow:hidden}
+  .card-top{padding:16px 18px 8px;border-bottom:1px solid var(--line)}
+  .cap-name{font-family:var(--font-d);font-weight:600;font-size:17px;color:var(--ink)}
+  .cap-name span{color:var(--accent);font-weight:600}
+  .meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:7px}
+  .tag{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px}
+  .tag.teach{color:var(--teach);background:var(--teach-bg)}
+  .tag.core{color:var(--core);background:var(--core-bg)}
+  .dan{font-size:12px;color:var(--muted)}
+  .strands{font-size:12.5px;color:var(--muted);font-style:italic;margin-top:7px}
+
+  .card-body{display:grid;grid-template-columns:1.15fr .85fr;gap:0}
+  @media(max-width:780px){.card-body{grid-template-columns:1fr}}
+  .levels{padding:14px 18px;border-right:1px solid var(--line)}
+  @media(max-width:780px){.levels{border-right:0;border-bottom:1px solid var(--line)}}
+  .lvl{display:grid;grid-template-columns:84px 1fr;gap:10px;padding:8px;border-radius:9px;font-size:13px;transition:.15s}
+  .lvl + .lvl{margin-top:2px}
+  .lvl .code{font-weight:700;color:var(--muted)}
+  .lvl .code em{display:block;font-style:normal;font-weight:500;font-size:11px;color:#94a0b0}
+  .lvl.is-current{background:#eef4fb;box-shadow:inset 3px 0 0 var(--blue)}
+  .lvl.is-target{background:#fbeee9;box-shadow:inset 3px 0 0 var(--accent)}
+  .lvl.is-both{background:linear-gradient(90deg,#eef4fb,#fbeee9);box-shadow:inset 3px 0 0 var(--navy)}
+  .lvl .badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-left:6px;
+    padding:1px 6px;border-radius:5px;vertical-align:middle}
+  .badge.cur{color:#fff;background:var(--blue)} .badge.tgt{color:#fff;background:var(--accent)}
+
+  .assess{padding:16px 18px;background:#fcfbf9}
+  .field{margin-bottom:13px}
+  .field label{display:block;font-size:12px;font-weight:700;color:var(--navy);margin-bottom:5px;letter-spacing:.02em}
+  .row2{display:flex;gap:10px}
+  select,input[type=text],input[type=email],input[type=number],textarea{font:inherit;width:100%;
+    border:1px solid var(--line);border-radius:8px;padding:9px 10px;background:#fff;color:var(--ink)}
+  select:focus,input:focus,textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,111,176,.14)}
+  textarea{resize:vertical;min-height:62px}
+  .rate{display:flex;gap:6px}
+  .star{appearance:none;border:1px solid var(--line);background:#fff;border-radius:8px;width:34px;height:34px;
+    font-weight:700;color:var(--muted);cursor:pointer;transition:.15s}
+  .star.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+  /* tab2 */
+  .profile{display:grid;grid-template-columns:1fr 1fr;gap:14px;background:#fff;border:1px solid var(--line);
+    border-radius:var(--r);padding:18px;box-shadow:var(--shadow)}
+  @media(max-width:680px){.profile{grid-template-columns:1fr}}
+  .profile .full{grid-column:1/-1}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:18px 0 6px}
+  .btn{appearance:none;border:0;cursor:pointer;font:inherit;font-weight:600;border-radius:9px;padding:10px 15px;transition:.16s;display:inline-flex;align-items:center;gap:8px}
+  .btn.primary{background:var(--navy);color:#fff} .btn.primary:hover{background:#0f1a2e}
+  .btn.accent{background:var(--accent);color:#fff} .btn.accent:hover{filter:brightness(.94)}
+  .btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)} .btn.ghost:hover{border-color:var(--navy)}
+  .btn.sm{padding:6px 10px;font-size:13px}
+
+  table.goals{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid var(--line);
+    border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);margin-top:8px}
+  table.goals th{background:#f3eee5;text-align:left;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--navy);padding:11px 12px;border-bottom:1px solid var(--line)}
+  table.goals td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  table.goals tr:last-child td{border-bottom:0}
+  table.goals textarea{min-height:48px;font-size:13px}
+  table.goals input{font-size:13px}
+  .wt{width:74px;text-align:center}
+  .del{appearance:none;border:0;background:#f8e9dd;color:var(--core);border-radius:7px;width:28px;height:28px;cursor:pointer;font-weight:700}
+  .del:hover{background:#f2d8c6}
+  .wt-total{font-size:12.5px;color:var(--muted);margin:8px 2px}
+  .wt-total b{color:var(--navy)} .wt-total.bad b{color:var(--accent)}
+
+  .uploads{background:#fff;border:1px dashed var(--line);border-radius:var(--r);padding:16px 18px;margin-top:16px}
+  .filelist{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+  .filelist li{display:flex;align-items:center;gap:10px;font-size:13px;background:#f7f4ef;border-radius:7px;padding:7px 10px}
+  .filelist .x{margin-left:auto;cursor:pointer;color:var(--muted);font-weight:700}
+
+  .banner{border-radius:var(--r);padding:13px 16px;font-size:14px;margin:16px 0;display:none}
+  .banner.ok{display:block;background:#e7f1e2;border:1px solid #bcd6ac;color:#2f5320}
+  .banner.warn{display:block;background:#fff4e5;border:1px solid #f0c98a;color:#8a5a00}
+
+  /* tab3 */
+  .pd{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);margin:12px 0;overflow:hidden}
+  .pd-h{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .pd-h .g{font-family:var(--font-d);font-weight:600;font-size:16px}
+  .pd-h .move{font-size:12px;color:var(--muted);background:#eef4fb;padding:3px 9px;border-radius:999px;font-weight:600}
+  .pd-body{padding:6px 18px 16px}
+  .pd-item{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line)}
+  .pd-item:last-child{border-bottom:0}
+  .pd-item .ic{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--teach-bg);color:var(--teach);font-weight:700;flex:none}
+  .pd-item .t{font-weight:600}
+  .pd-item .d{font-size:12.5px;color:var(--muted)}
+  .pill{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:#eef1f6;color:var(--navy);margin-left:6px}
+  .pill.mand{background:#f8e1de;color:#9a2f23}
+  .ext{background:#fff7f3;border:1px solid #f0d4c8;border-radius:10px;padding:13px;margin:8px 0}
+  .ext .t{font-weight:700;color:var(--core)}
+  .ext .msg{font-size:13px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;margin-top:9px;white-space:pre-wrap}
+  .empty{color:var(--muted);font-size:14px;background:#fff;border:1px dashed var(--line);border-radius:var(--r);padding:22px;text-align:center}
+  footer{max-width:1120px;margin:40px auto 0;padding:0 22px;color:var(--muted);font-size:12px}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(30px);background:var(--navy);color:#fff;
+    padding:11px 18px;border-radius:10px;font-size:14px;font-weight:600;opacity:0;transition:.3s;z-index:50;box-shadow:var(--shadow)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<header>
+  <div class="head-in">
+    <div class="brand"><small>Al Ittihad Private Schools</small>Professional Development Platform</div>
+    <div class="who">
+      Cycle 2025–2026
+      <input id="p-name" type="text" placeholder="Your name" aria-label="Your name">
+      <button id="printbtn" class="btn ghost sm" style="background:#fff;color:var(--navy);border-color:#fff">🖨 Print / Save PDF</button>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button class="tab active" data-tab="1"><span class="n">1</span> Capability Self-Assessment</button>
+  <button class="tab" data-tab="2"><span class="n">2</span> Development Goals</button>
+  <button class="tab" data-tab="3"><span class="n">3</span> PD Recommendations</button>
+</nav>
+
+<div class="wrap">
+  <!-- TAB 1 -->
+  <section class="panel active" id="tab1">
+    <h2 class="sec">Where am I now — and where am I heading?</h2>
+    <p class="lede">For each capability, read the levels, mark your <b>current</b> level and a <b>target</b> level for this cycle, add a short reflection with an example, and note your confidence. The gaps you set here drive your goals in Tab&nbsp;2. You only assess the capabilities relevant to your role, and most people focus on two or three each cycle — not all fifteen.</p>
+    <div class="progress">
+      <span class="chip"><b id="pct">0</b>% assessed</span>
+      <div class="bar"><i id="barfill"></i></div>
+      <span class="chip"><b id="gapcount">0</b> growth gaps set</span>
+    </div>
+    <div id="caps"></div>
+  </section>
+
+  <!-- TAB 2 -->
+  <section class="panel" id="tab2">
+    <h2 class="sec">My development goals</h2>
+    <p class="lede">Add your professional details, then let the platform turn your self-assessment gaps into draft goals. Edit, add or remove freely, attach evidence, and save or submit.</p>
+    <div class="profile">
+      <div class="field"><label>Highest qualification</label><input id="p-qual" type="text" placeholder="e.g. MEd, Educational Leadership"></div>
+      <div class="field"><label>Other certificates</label><input id="p-cert" type="text" placeholder="e.g. Apple Teacher, IB workshops"></div>
+      <div class="field full"><label>Years of relevant experience</label><input id="p-exp" type="text" placeholder="e.g. 8 years"></div>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn primary" id="gen">✦ Analyse my self-assessment → suggest goals</button>
+      <label style="font-size:13px;color:var(--muted);display:inline-flex;align-items:center;gap:6px">draft my
+        <select id="gncount" style="font:inherit;padding:4px 8px;border:1px solid var(--line);border-radius:7px;background:#fff">
+          <option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option><option value="0">all</option>
+        </select> biggest gaps</label>
+      <button class="btn ghost sm" id="addgoal">+ Add goal</button>
+    </div>
+    <span class="agent-note">Drafts your largest current→target gaps (the framework recommends 2–3 per cycle), plus any capability where you ticked “I’d like PD support” — those are always included. Reflection requests are auto-detected here by a simple keyword check; in production an AI agent reads the reflection properly.</span>
+
+    <table class="goals" id="goalstbl">
+      <thead><tr>
+        <th style="width:24%">Goal</th><th style="width:8%">Weight&nbsp;%</th>
+        <th style="width:26%">Objectives</th><th style="width:22%">KPI / Measure</th>
+        <th style="width:14%">Timeline</th><th style="width:6%"></th>
+      </tr></thead>
+      <tbody id="goalbody"></tbody>
+    </table>
+    <div class="wt-total" id="wttotal"></div>
+
+    <div class="uploads">
+      <label class="field" style="margin:0"><span style="font-weight:700;color:var(--navy);font-size:12px">Supporting documents</span></label>
+      <div style="margin-top:8px"><button class="btn ghost sm" id="uploadbtn">⬆ Attach files</button>
+      <input type="file" id="fileinput" multiple hidden></div>
+      <ul class="filelist" id="filelist"></ul>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn primary" id="save">⬇ Save draft (download)</button>
+    </div>
+  </section>
+
+  <!-- TAB 3 -->
+  <section class="panel" id="tab3">
+    <h2 class="sec">Recommended professional development</h2>
+    <p class="lede">Recommendations are pulled from the IPS PD catalogue (55 recommended courses) running in the background. Mandatory training is listed first; then, for each goal, the catalogue’s development courses for that capability. For each one, confirm whether it is already in your PD library.</p>
+    <span class="agent-note">“Yes” adds the course to your 2025–2026 plan (a link to your library course will sit here later). “No” drafts a note to your supervisor to develop or source it.</span>
+    <div id="pdout"></div>
+    <div class="toolbar" style="margin-top:18px">
+      <button class="btn accent" id="submit">Submit plan for review</button>
+    </div>
+    <span class="agent-note">Submitting sends your goals and PD plan — including any “to be developed” requests — to your supervisor, so they can be discussed and PD time agreed in your review meeting.</span>
+    <div class="banner ok" id="submitbanner"></div>
+  </section>
+</div>
+
+<footer>Prototype · Professional Development Platform · data stays in your browser session; “Save” downloads a JSON snapshot you control.</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- DATA ---------- */
+const LEVELS=[{c:1,n:"Emerging"},{c:2,n:"Established"},{c:3,n:"Accomplished"},{c:4,n:"Leading"},{c:5,n:"Strategic"}];
+const LNAME={1:"Emerging",2:"Established",3:"Accomplished",4:"Leading",5:"Strategic"};
+
+const FRAMEWORK=[
+ {dom:"Domain 1 — Inspiring Excellence",caps:[
+  {num:"1.1",name:"Achieve outcomes to the highest standard",who:"core",dan:"Danielson D4 · Professional Responsibilities",
+   strands:"Aim for excellence; plan workload; sound judgement with resources; equity and diversity; project and risk management.",
+   lv:{1:"You follow the school's code of conduct and understand its vision; you organise your daily workload with minimal direction and keep clear records; you use resources responsibly.",
+       2:"You deliver work to completion despite competing priorities; you plan time, resources and support against clear outcomes; you make evidence-based decisions and act to prevent unfair practice.",
+       3:"You promote a commitment to excellence in yourself and others; you allocate and review resources to stay on-target and on-budget; you challenge inequitable practice professionally and apply project management.",
+       4:"You take positive action where team performance falls short and build a culture that celebrates achievement; you improve processes to use people and resources better; you address colleagues' skill gaps through development.",
+       5:"You improve school-wide performance through vision, principles and strategy; you oversee reporting and compliance; you allocate resources across competing priorities and drive workforce development."}},
+  {num:"1.2",name:"Master subject content and its delivery",who:"teach",dan:"Danielson D1 · Planning & Preparation",
+   strands:"Subject content knowledge; instructional strategies; curriculum, standards, benchmarks and unit guides.",
+   lv:{1:"You show sound knowledge of your subject's core theory and content; you research and trial instructional strategies; you know the IPS curriculum, standards, benchmarks and unit guides.",
+       2:"You apply content knowledge through effective, grade-appropriate teaching; you select strategies that meet students' needs; you deliver lessons aligned to the curriculum and standards.",
+       3:"You share comprehensive subject knowledge to build content-rich teaching; you support colleagues with subject expertise and content delivery; you advise on high-quality lesson planning.",
+       4:"You lead development of practice through deep content expertise; you lead the design of research-based approaches across a team; you evaluate teaching and lead curriculum development.",
+       5:"You shape subject and curriculum policy school-wide; you set the standard for content expertise across phases; you lead curriculum alignment and improvement. (Whole-school leadership.)"}},
+  {num:"1.3",name:"Plan, assess and report on learning",who:"teach",dan:"Danielson D1 · D3",
+   strands:"Goals and objectives; content selection; authentic assessment; monitoring, reporting and feedback.",
+   lv:{1:"You set clear, suitable goals and objectives; you organise content logically; you know a range of assessment strategies and keep records, monitor progress and give constructive feedback.",
+       2:"Your goals reflect sound content understanding; you select and use authentic assessment linked to outcomes; you maintain effective systems for recording, monitoring and reporting progress.",
+       3:"You set challenging goals for all students and help colleagues articulate clear objectives; you design and help colleagues select authentic assessment; you support effective reporting and feedback systems.",
+       4:"You establish rigorous goals using expert knowledge; you advise on content organisation; you lead the design of authentic assessment that lets all learners demonstrate achievement.",
+       5:"You shape assessment and reporting policy across the school; you lead initiatives promoting authentic assessment and data use; you drive consistency across phases. (Whole-school leadership.)"}},
+  {num:"1.4",name:"Drive quality teaching and student success",who:"teach",dan:"Danielson D3 · Instruction",
+   strands:"Contribute to student success and retention; close attainment and progress gaps; raise standards.",
+   lv:{1:"You engage with strategies to improve student success and progress; you understand the school's expectations for high-quality teaching; you respond to feedback on your impact.",
+       2:"You contribute consistently to improved success, progress and attainment at class level; you evaluate your teaching and adjust; you use data to act on attainment and progress gaps.",
+       3:"You contribute to improved success across a course or year group; you collaborate with peers to strengthen practice; you help close gaps and share what works.",
+       4:"You lead teams that improve student success and retention at department or phase level; you lead the review and improvement of teaching practice; you drive evidence-informed action on gaps.",
+       5:"You lead school-wide initiatives that raise success, progress and attainment; you set expectations for high-quality teaching; you embed a culture of measurable improvement. (Whole-school leadership.)"}}
+ ]},
+ {dom:"Domain 2 — Empowering People and Leadership",caps:[
+  {num:"2.1",name:"Cultivate productive relationships and lead",who:"core",dan:"Danielson D4 · Professional Responsibilities",
+   strands:"Teamwork and collaboration; leadership behaviours; flexibility and adaptability; negotiation.",
+   lv:{1:"You work co-operatively toward shared goals; you understand your role and others'; you keep an open mind, seek advice, and recognise that leadership behaviours matter whatever your role.",
+       2:"You collaborate widely to draw on the broadest range of skills; you listen actively and reflect; you encourage open dialogue, support self-reliance and seek mutually beneficial agreement.",
+       3:"You build clear roles and draw out team members' skills; you resolve conflict by focusing on behaviour; you delegate to develop others and manage your team's performance and development.",
+       4:"You apply knowledge of team dynamics to lead teamwork; you form cross-team groups and coach team leaders; you support initiatives that enhance staff wellbeing.",
+       5:"You engage colleagues and stakeholders in direction-setting; you build structures and a culture that value every contribution; you manage the performance, development and succession of senior staff."}},
+  {num:"2.2",name:"Take ownership of your own growth",who:"core",dan:"Danielson D4 · Professional Responsibilities",
+   strands:"Accountability; full participation in appraisal; self-evaluation; driving your own development.",
+   lv:{1:"You take responsibility for your decisions and meet deadlines; you understand the appraisal process and discuss your responsibilities; you use honest self-evaluation to find strengths and gaps.",
+       2:"You seek feedback and identify ways to improve against the performance statements; you address skill gaps and share what you learn; you reflect on practice to enhance learning.",
+       3:"You set clear, self-aware goals aligned to team and school needs; you seek mentoring and coaching for your own growth and use self-assessment tools; you engage with professional networks.",
+       4:"You exemplify commitment to development and engage in wide networks; you seek feedback from many colleagues; you create opportunities for succession, knowledge-sharing and shadowing.",
+       5:"You champion workforce development and lead a PD strategy that builds capability school-wide; you seek out challenges that stretch you and continually enhance your performance."}},
+  {num:"2.3",name:"Mentor and build capacity in others",who:"teach",dan:"Danielson D4 · Professional Responsibilities",
+   strands:"Peer review and collaborative practice; mentoring colleagues; sharing best practice.",
+   lv:{1:"You accept constructive criticism to improve; you understand the value of teamwork and benchmarking; you take part in peer review and collaborative peer learning.",
+       2:"You evaluate teaching transparently with colleagues; you offer and accept constructive criticism; you become a peer reviewer and benchmark teaching and assessment to uphold quality.",
+       3:"You model and build structures for sharing best practice; you mentor colleagues, encourage peer reviewers, and build committees for professional discussion.",
+       4:"You lead an environment for constructive criticism and discussion; you lead teams and mentor individuals to build capacity through benchmarking that upholds quality.",
+       5:"You lead peer mentoring and collaborative practice across the school, building capacity and upholding the quality of curriculum. (Whole-school leadership.)"}},
+  {num:"2.4",name:"Contribute to strategy and improvement",who:"core",dan:"Danielson D4 · Professional Responsibilities",
+   strands:"Understand the learner-centred school; stay informed of strategy; engage in planning and decisions.",
+   lv:{1:"You understand that the school exists to support students' success; you have read and understood the school's plan and vision; you contribute information when your team plans.",
+       2:"You relate your work to the school's teaching and learning; you keep informed of the strategic plan; you know the stakeholders and their role in education.",
+       3:"You contribute to plans that create pathways for students to succeed; you analyse developments for their impact on plans; you ensure knowledge is shared for planning and decisions.",
+       4:"You advise on emerging needs and inform planning; you develop team, phase or school plans for medium-to-long-term improvement; you engage colleagues in participative decision-making.",
+       5:"You shape the school plans that help students succeed; you set strategic direction on evidence of learning gains; you maintain networks to deepen understanding of education systems."}}
+ ]},
+ {dom:"Domain 3 — Innovative Learning",caps:[
+  {num:"3.1",name:"Use technology to enhance learning",who:"teach",dan:"Danielson D3 · Instruction",
+   strands:"Technology-enhanced learning; ethical and responsible AI; digital tools for design, feedback and engagement.",
+   lv:{1:"You use ICT tools and devices to generate interest and support learning; you apply basic digital skills and sound classroom management; you understand expectations for ethical, responsible use of technology and AI.",
+       2:"You select and use technology to create and enhance learning; you evaluate education software; you use AI tools responsibly and ethically for design, feedback and engagement.",
+       3:"You share digital skills and help colleagues use technology effectively; you design technology-enhanced learning that engages all learners; you guide colleagues on responsible AI use.",
+       4:"You lead teams to promote technology-enhanced learning with sustainable, ethical solutions; you lead policies that integrate ICT and AI into the learning environment.",
+       5:"You lead school-wide initiatives promoting ethical, innovative digital solutions and build staff capacity to design with technology and AI. (Whole-school leadership; anchors the Apple Distinguished School identity.)"}},
+  {num:"3.2",name:"Apply innovative, evidence-informed teaching strategies",who:"teach",dan:"Danielson D3 · Instruction",
+   strands:"Research-based strategies; student-centred and inquiry approaches; creativity in the classroom.",
+   lv:{1:"You research and trial a range of strategies suited to your content; you are open to new techniques; you understand student-centred and inquiry-based approaches.",
+       2:"You apply varied strategies to meet students' needs; you adopt student-centred and inquiry approaches and adapt to how students learn; you bring creativity into the classroom.",
+       3:"You support colleagues to make their strategies more research-based and innovative; you model creative, student-centred practice; you solve novel teaching problems creatively.",
+       4:"You lead or initiate research-based strategies across a team; you champion innovative pedagogy and support colleagues to take reasonable risks to improve learning.",
+       5:"You lead school-wide adoption of innovative, evidence-informed pedagogy; you build a culture where creative, student-centred teaching is expected. (Whole-school leadership.)"}},
+  {num:"3.3",name:"Lead innovation, change and continuous improvement",who:"core",dan:"Danielson D4 · D3",
+   strands:"Creative problem-solving; change management; reasonable risk-taking; continuous improvement.",
+   lv:{1:"You understand that education is changing and stakeholders expect improved, accountable service; you focus on outcomes and are willing to adapt.",
+       2:"You think beyond the obvious and are encouraged to present ideas and trial new ways of working; you offer evidence-based information to support decisions.",
+       3:"You solve problems beyond your experience; you know change-management principles and use them; you coach others into new thinking and take reasonable, well-judged risks.",
+       4:"You model the behaviour of a change agent — open, outcomes-focused, consultative, a measured risk-taker; you balance stakeholder interests and guide new initiatives that value creativity.",
+       5:"You champion a culture of reflection, innovation and change; you enable staff and stakeholders to debate the direction of education; you challenge others to raise performance through innovation."}}
+ ]},
+ {dom:"Domain 4 — Community and Connection",caps:[
+  {num:"4.1",name:"Communicate effectively",who:"core",dan:"Danielson D4 · Professional Responsibilities",
+   strands:"Open communication; service to stakeholders; the right channel; clear, plain language.",
+   lv:{1:"You ask questions to understand and give clear updates; you put service first and stay positive, patient and courteous; you understand the purpose and audience of each communication.",
+       2:"You seek input and use proper channels; you listen as well as tell; you anticipate stakeholders' needs, adopt a can-do approach and choose the form that suits the audience.",
+       3:"You ensure consistency between words and actions; you share information that shows people are valued and give timely praise; you develop and evaluate your team's communication methods.",
+       4:"You review policies to promote open, two-way communication; you base decisions on stakeholders' needs and set service expectations; you model and coach effective communication.",
+       5:"You lead on open communication, seek feedback from all levels, and communicate changes that improve people's experience; you ensure formal communications are clear, concise and plain."}},
+  {num:"4.2",name:"Communicate with and engage students",who:"teach",dan:"Danielson D3 · D2",
+   strands:"Classroom discussion and questioning; purposeful grouping; engaging teaching strategies.",
+   lv:{1:"You use clear, engaging communication to support learning and discussion; you use a range of grouping structures; you use strategies and tools that generate interest and participation.",
+       2:"You explain, question and respond to encourage contribution and discussion; you design grouping that makes content meaningful; you create and select strategies that engage all learners.",
+       3:"You implement questioning and explanation that sustain dialogue and deepen comprehension; you help colleagues design effective grouping and engaging strategies.",
+       4:"You model exemplary questioning and discussion techniques and coach colleagues; you model grouping and engagement strategies that enhance learning and make content relevant.",
+       5:"You lead school-wide development of classroom communication and student engagement across phases. (Whole-school leadership.)"}},
+  {num:"4.3",name:"Know your students and teach inclusively",who:"teach",dan:"Danielson D1 · D2",
+   strands:"Diverse backgrounds; developmental stages; approaches to learning; inclusive strategies (SEN, EAL, G&T, behaviour).",
+   lv:{1:"You show knowledge of students' diverse backgrounds and how these affect learning; you understand developmental stages and a range of inclusive strategies for additional needs, EAL and challenging behaviour.",
+       2:"You apply knowledge of backgrounds, development and prior learning to meet all students' needs; you apply inclusive and literacy strategies for SEN, EAL, gifted and talented and behavioural needs.",
+       3:"You share knowledge of how backgrounds and prior learning affect outcomes; you advise colleagues on effective inclusive and literacy strategies for the full range of learners.",
+       4:"You use theoretical knowledge of diversity to develop policies and strategies; you observe and assess teaching using expert knowledge of development and inclusive practice.",
+       5:"You lead inclusive practice across the school so all learners — including Students of Determination and gifted and talented students — can access and succeed. (Whole-school leadership.)"}},
+  {num:"4.4",name:"Partner with families and the wider community",who:"teach",dan:"Danielson D4 · Professional Responsibilities",
+   strands:"Engage parents; contribute to the professional and wider community; uphold national identity and heritage.",
+   lv:{1:"You understand how communication with parents supports progress; you are willing to work with consultants and community personnel; you uphold the school's national identity and heritage.",
+       2:"You provide regular, effective communication and involvement of parents in learning and reporting; you network in educational forums and contribute to the professional community.",
+       3:"You build communication strategies that help parents support learning; you create professional relationships across the community and access research to strengthen practice.",
+       4:"You instigate parent-teacher forums for two-way communication; you draw on the wider community for resources; you build professional relationships across the community.",
+       5:"You lead school-wide engagement with families and the wider community, embedding partnership and national identity across the school. (Whole-school leadership.)"}}
+ ]}
+];
+const CAPBYNUM={}; FRAMEWORK.forEach(d=>d.caps.forEach(c=>CAPBYNUM[c.num]=c));
+const TOTALCAPS=Object.keys(CAPBYNUM).length;
+
+/* IPS PD Catalogue — the 55-course recommended set, running in the background.
+   caps = capabilities a course develops; ty = Mandatory / Core / Developmental. */
+const DOMLABEL={Compliance:"Mandatory / Compliance",D1:"Inspiring Excellence",D2:"Empowering People & Leadership",D3:"Innovative Learning",D4:"Community & Connection",Role:"Role-specific & induction"};
+const CATALOGUE=[
+ {c:"Compliance",t:"Safeguarding & child protection",caps:["4.3"],ty:"Mandatory",who:"All staff",dl:"Online module + annual refresher"},
+ {c:"Compliance",t:"Student protection & reporting procedures",caps:[],ty:"Mandatory",who:"All staff",dl:"Online module + annual refresher"},
+ {c:"Compliance",t:"Inclusive education & SEND foundations",caps:["4.3"],ty:"Mandatory",who:"All staff",dl:"Workshop + follow-up"},
+ {c:"Compliance",t:"Supporting multilingual / EAL learners",caps:["4.3"],ty:"Mandatory",who:"Teaching",dl:"Workshop + coaching"},
+ {c:"Compliance",t:"Identifying & supporting gifted and talented students",caps:["4.3"],ty:"Mandatory",who:"Teaching",dl:"Workshop + coaching"},
+ {c:"Compliance",t:"Student wellbeing & mental health (recognise & refer)",caps:["4.3"],ty:"Mandatory",who:"All staff",dl:"Module + scenario training"},
+ {c:"Compliance",t:"Staff wellbeing & resilience",caps:["2.2"],ty:"Mandatory",who:"All staff",dl:"Workshop / ongoing"},
+ {c:"Compliance",t:"Cultural considerations & Emirati values",caps:["4.4"],ty:"Mandatory",who:"All staff (esp. new)",dl:"Induction + ongoing"},
+ {c:"Compliance",t:"Moral education delivery",caps:["4.4"],ty:"Mandatory",who:"Teaching",dl:"Workshop"},
+ {c:"Compliance",t:"Sustainability & environmental stewardship",caps:["4.4"],ty:"Mandatory",who:"All staff",dl:"Module + projects"},
+ {c:"Compliance",t:"Diversity, equity & anti-discrimination",caps:["1.1"],ty:"Mandatory",who:"All staff",dl:"Module"},
+ {c:"Compliance",t:"Cyber security & data protection",caps:["3.1"],ty:"Mandatory",who:"All staff",dl:"Module + annual refresher"},
+ {c:"Compliance",t:"Responsible & ethical AI use (privacy, bias, integrity)",caps:["3.1"],ty:"Mandatory",who:"All staff",dl:"Workshop + policy briefing"},
+ {c:"Compliance",t:"Health & safety, first aid & emergency procedures",caps:[],ty:"Mandatory",who:"All staff",dl:"Certified training"},
+ {c:"Compliance",t:"UAE School Inspection Framework familiarisation",caps:["2.4"],ty:"Mandatory",who:"All staff",dl:"Induction briefing"},
+ {c:"D1",t:"Subject content deepening (by department)",caps:["1.2"],ty:"Core",who:"Teaching",dl:"Subject PLC + summer institute"},
+ {c:"D1",t:"Curriculum mastery & alignment (Common Core / NGSS)",caps:["1.2"],ty:"Core",who:"Teaching",dl:"PLC + coaching"},
+ {c:"D1",t:"Lesson & unit design (backward design)",caps:["1.3"],ty:"Core",who:"Teaching",dl:"Workshop + coaching"},
+ {c:"D1",t:"Formative assessment / assessment for learning",caps:["1.3"],ty:"Core",who:"Teaching",dl:"Workshop + classroom coaching"},
+ {c:"D1",t:"Authentic & performance-based assessment design",caps:["1.3"],ty:"Developmental",who:"Teaching",dl:"Design clinic + moderation"},
+ {c:"D1",t:"Data literacy: using MAP/IBT/internal data to close gaps",caps:["1.4","1.3"],ty:"Core",who:"Teaching + leaders",dl:"Workshop + PLC"},
+ {c:"D1",t:"Moderation & standardisation of marking",caps:["1.3"],ty:"Core",who:"Teaching",dl:"PLC (job-embedded)"},
+ {c:"D1",t:"High expectations & academic rigor",caps:["1.4"],ty:"Core",who:"Teaching",dl:"Workshop + coaching"},
+ {c:"D1",t:"Feedback that moves learning forward",caps:["1.3","1.4"],ty:"Core",who:"Teaching",dl:"Workshop + coaching"},
+ {c:"D2",t:"Reflective practice & using the capability framework",caps:["2.2"],ty:"Core",who:"All staff",dl:"Induction + ongoing self-review"},
+ {c:"D2",t:"Coaching & mentoring skills (for mentors/buddies)",caps:["2.3"],ty:"Developmental",who:"Mentors / experienced",dl:"Practice-based programme"},
+ {c:"D2",t:"Peer observation & lesson study",caps:["2.3","1.2"],ty:"Core",who:"Teaching",dl:"Job-embedded cycles"},
+ {c:"D2",t:"Facilitating professional learning communities",caps:["2.1","2.3"],ty:"Developmental",who:"Leads / leaders",dl:"Programme + practice"},
+ {c:"D2",t:"Middle leadership development (HODs, coordinators)",caps:["2.1","2.4"],ty:"Developmental",who:"Middle / aspiring leaders",dl:"Sustained programme + mentoring"},
+ {c:"D2",t:"Senior leadership & succession (aspiring SLT)",caps:["2.1","2.4"],ty:"Developmental",who:"Senior / aspiring leaders",dl:"Sustained programme + mentoring"},
+ {c:"D2",t:"Leading change & school improvement",caps:["3.3","2.4"],ty:"Developmental",who:"Leaders",dl:"Programme + project"},
+ {c:"D2",t:"Giving & receiving feedback; difficult conversations",caps:["2.1","4.1"],ty:"Core",who:"All staff",dl:"Workshop"},
+ {c:"D2",t:"Appraisal / PPDR for line managers",caps:["2.2"],ty:"Core",who:"Line managers",dl:"Workshop + tools"},
+ {c:"D3",t:"Technology-enhanced learning essentials / Apple Teacher",caps:["3.1"],ty:"Core",who:"Teaching",dl:"Self-paced + coaching"},
+ {c:"D3",t:"AI for teaching productivity (planning, resources, feedback)",caps:["3.1"],ty:"Developmental",who:"Teaching",dl:"Workshop + practice"},
+ {c:"D3",t:"Teaching students AI literacy (safe & critical use)",caps:["3.1","4.2"],ty:"Developmental",who:"Teaching",dl:"Workshop + curriculum integration"},
+ {c:"D3",t:"Inquiry-based & project-based learning",caps:["3.2"],ty:"Core",who:"Teaching",dl:"Workshop + coaching"},
+ {c:"D3",t:"Differentiation & adaptive teaching",caps:["3.2","4.3"],ty:"Core",who:"Teaching",dl:"Workshop + coaching"},
+ {c:"D3",t:"STEAM & Innovation Center pedagogy",caps:["3.2"],ty:"Developmental",who:"Teaching",dl:"Workshop + project"},
+ {c:"D3",t:"Creativity & critical thinking in the classroom",caps:["3.2"],ty:"Core",who:"Teaching",dl:"Workshop"},
+ {c:"D3",t:"Blended & flipped learning design",caps:["3.1"],ty:"Developmental",who:"Teaching",dl:"Workshop + practice"},
+ {c:"D4",t:"Classroom management & positive behaviour",caps:["4.2","4.3"],ty:"Core",who:"Teaching (esp. new)",dl:"Workshop + coaching"},
+ {c:"D4",t:"Questioning & dialogic teaching",caps:["4.2"],ty:"Core",who:"Teaching",dl:"Workshop + coaching"},
+ {c:"D4",t:"Student grouping & cooperative learning",caps:["4.2"],ty:"Core",who:"Teaching",dl:"Workshop"},
+ {c:"D4",t:"Inclusive classroom strategies (UDL)",caps:["4.3"],ty:"Core",who:"Teaching",dl:"Workshop + coaching"},
+ {c:"D4",t:"Culturally responsive & trauma-informed practice",caps:["4.3","4.4"],ty:"Developmental",who:"Teaching",dl:"Workshop"},
+ {c:"D4",t:"Effective communication & plain language",caps:["4.1"],ty:"Core",who:"All staff",dl:"Workshop"},
+ {c:"D4",t:"Parent engagement & partnership",caps:["4.4"],ty:"Core",who:"Teaching + leaders",dl:"Workshop"},
+ {c:"D4",t:"National identity, Arabic & Islamic values integration",caps:["4.4"],ty:"Core",who:"Teaching",dl:"Workshop + planning"},
+ {c:"D4",t:"Global citizenship & sustainability education",caps:["4.4"],ty:"Core",who:"Teaching",dl:"Workshop + projects"},
+ {c:"Role",t:"New staff induction & onboarding",caps:["2.2","2.4"],ty:"Mandatory",who:"New staff",dl:"Induction programme"},
+ {c:"Role",t:"Buddy / mentor programme for new teachers",caps:["2.3"],ty:"Core",who:"New staff + mentors",dl:"Paired, ongoing"},
+ {c:"Role",t:"Support staff role-specific PD",caps:[],ty:"Core",who:"Support staff",dl:"Role-based"},
+ {c:"Role",t:"Career & university guidance counsellor CPD",caps:[],ty:"Mandatory",who:"Counsellors",dl:"25h + ADEK-mandated"},
+ {c:"Role",t:"Inclusion team specialist PD",caps:["4.3"],ty:"Developmental",who:"Inclusion staff",dl:"40-60h specialist"}
+];
+const CAPDOM={}; FRAMEWORK.forEach(d=>{const L=d.dom.split("\u2014")[1].trim(); d.caps.forEach(c=>CAPDOM[c.num]=L);});
+const MAND=CATALOGUE.filter(p=>p.ty==="Mandatory");
+function recsForCap(cap){return CATALOGUE.filter(p=>p.ty!=="Mandatory"&&p.caps.includes(cap));}
+
+/* ---------- STATE ---------- */
+const state={profile:{name:"",qual:"",cert:"",exp:"",supervisor:"",supEmail:"",role:"",phase:"",subject:"",title:""},
+  assessment:{}, goals:[], documents:[], pdDecisions:{}, submitted:false, goalSeq:0};
+
+const $=id=>document.getElementById(id);
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1900);}
+
+/* ---------- TABS ---------- */
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+  document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  const t=b.dataset.tab; $("tab"+t).classList.add("active");
+  if(t==="2")renderGoals(); if(t==="3")renderPD();
+}));
+
+const REFEX={
+"1.1":["Teaching example — I will track my class data each term and adjust my teaching to stay on target.","Support example — I will set clear targets for my work and review my progress each term."],
+"1.2":["I will deepen my knowledge of a difficult topic before re-teaching it more clearly.","I will share strong subject resources with my department and explain the reasoning."],
+"1.3":["I will redesign a unit using backward design from the assessment.","I will use formative checks to reshape my next lessons."],
+"1.4":["I will set higher expectations and give feedback that moves students forward.","I will use data to close a gap for a group falling behind."],
+"2.1":["Teaching example — I will build stronger collaboration in my team and coach a colleague this cycle.","Support example — I will improve how my team works together and lead on resolving a recurring issue."],
+"2.2":["Teaching example — I will seek feedback on my teaching and use the framework to set my goals.","Support example — I will seek regular feedback on my work and act on it to improve."],
+"2.3":["I will mentor a new teacher and model lessons for them.","I will run a peer-observation cycle and help colleagues reflect."],
+"2.4":["Teaching example — I will read ADEK/KHDA updates and feed the implications into our planning.","Support example — I will understand the school’s priorities and link my work to them more clearly."],
+"3.1":["I will use a new tool to give faster feedback and track progress.","I will trial an edtech approach and share what works with the team."],
+"3.2":["I will introduce an inquiry- or project-based unit and refine it from student work.","I will adapt my teaching to differentiate for a range of learners."],
+"3.3":["Teaching example — I will pilot a new approach in my classroom and review its impact.","Support example — I will propose and trial a better way of doing a key part of my role."],
+"4.1":["Teaching example — I will adapt my communication to each audience and improve a routine parent message.","Support example — I will communicate more clearly with colleagues and stakeholders, keeping it plain and timely."],
+"4.2":["I will use questioning that pushes students into deeper discussion.","I will group students more deliberately to support their learning."],
+"4.3":["I will plan for EAL learners and students with additional needs in every lesson.","I will use what I know about students’ backgrounds to make content relevant."],
+"4.4":["I will hold regular two-way conversations with families about progress.","I will draw on community links to enrich a unit."]
+};
+function reflLooksLikeRequest(t){
+  if(!t) return false;
+  return /\b(i (want|need|would like|hope|aim|plan|wish|intend)|i[\u2019']d like|learn |training|upskill|get better|improve my|develop my|build my|get approval|would help me|help me|need to|need more|support to|grow my)\b/i.test(t);
+}
+function wantsSupport(a){ return a.support===true?true:(a.support===false?false:reflLooksLikeRequest(a.reflection||"")); }
+
+const ROLES={teacher:"Teacher",hod:"Head of Department / Subject Lead",senior:"Senior Leader (Principal / VP)",specialist:"Inclusion / Counsellor specialist",support:"Professional / support staff (non-teaching)"};
+function capVisible(c){ return state.profile.role==="support" ? c.who!=="teach" : true; }
+function whoAppliesToRole(who,role){
+  if(!who) return true;
+  if(/^All staff/.test(who)) return true;
+  if(/New staff/.test(who)) return true;
+  if(/Teaching/.test(who)) return role!=="support";
+  if(/Counsellor/.test(who)) return role==="specialist";
+  if(/Support staff/i.test(who)) return role==="support";
+  if(/Inclusion/.test(who)) return role==="specialist";
+  return true;
+}
+function isMismatch(a){ return !!(a&&a.current&&a.confidence&&a.confidence<=a.current-2); }
+function renderIntake(){
+  const p=state.profile, teaching=p.role&&p.role!=="support";
+  const esc=s=>(s||"").replace(/"/g,"&quot;");
+  const ropt=Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${p.role===k?"selected":""}>${v}</option>`).join("");
+  const phopt=["Primary","Secondary","KG / Early Years","Cross-phase"].map(x=>`<option ${p.phase===x?"selected":""}>${x}</option>`).join("");
+  return `<div class="intake">
+    <div class="intake-h">Tell us about your role</div>
+    <div class="intake-row">
+      <div class="field"><label>Your role</label><select id="in-role"><option value="">— choose —</option>${ropt}</select></div>
+      <div class="field"><label>Job title</label><input id="in-title" type="text" placeholder="e.g. Head of Curriculum, Data Analyst, School Nurse" value="${esc(p.title)}"></div>
+      ${teaching?`<div class="field"><label>Phase</label><select id="in-phase"><option value="">—</option>${phopt}</select></div>
+      <div class="field"><label>Subject(s)</label><input id="in-subject" type="text" placeholder="e.g. Mathematics" value="${esc(p.subject)}"></div>`:""}
+    </div>
+    <div class="intake-row" style="margin-top:12px">
+      <div class="field"><label>Supervisor’s name</label><input id="in-supname" type="text" placeholder="e.g. Louis Hourany" value="${esc(p.supervisor)}"></div>
+      <div class="field"><label>Supervisor’s email</label><input id="p-sup" type="email" placeholder="supervisor@inpsabudhabi.com" value="${esc(p.supEmail)}"></div>
+    </div>
+    <div class="intake-note">Your role sets which capabilities you see — teaching &amp; learning roles see all fifteen; professional and support staff (operations, admin, data, health, executive) see the six all-staff capabilities. Job title, phase and subject tailor your PD and the record; they don’t change the capabilities. Your supervisor’s details let you send the plan for review. You’ll focus on two or three capabilities each cycle, not all of them.</div>
+  </div>`;
+}
+function bindIntake(){
+  const on=(id,k,ev)=>{const e=$(id); if(e) e.addEventListener(ev||"input",x=>state.profile[k]=x.target.value);};
+  const r=$("in-role"); if(r) r.addEventListener("change",e=>{state.profile.role=e.target.value; renderCaps();});
+  on("in-phase","phase","change"); on("in-subject","subject"); on("in-title","title"); on("in-supname","supervisor"); on("p-sup","supEmail");
+}
+function updateMismatch(cap){
+  const a=state.assessment[cap]||{}, el=$("caps").querySelector(`[data-mm="${cap}"]`); if(!el) return;
+  el.innerHTML=isMismatch(a)?`<span class="mm-note">You’ve placed yourself at L${a.current} but rated confidence ${a.confidence}/5 — a possible development area. Tick “I’d like PD support” above to add it to your goals and PD.</span>`:"";
+}
+
+/* ---------- TAB 1 ---------- */
+function renderCaps(){
+  const intake=renderIntake();
+  if(!state.profile.role){ $("caps").innerHTML=intake+`<div class="empty" style="margin-top:14px">Choose your role above to see the capabilities relevant to you.</div>`; bindIntake(); return; }
+  let html=intake;
+  FRAMEWORK.forEach((d,di)=>{
+    const caps=d.caps.filter(capVisible); if(!caps.length) return;
+    html+=`<div class="domain" data-d="${di}"><div class="domain-h" onclick="this.parentNode.classList.toggle('collapsed')">
+      <h3>${d.dom}</h3><span class="caret">▼</span></div><div class="cards">`;
+    caps.forEach(c=>{
+      const a=state.assessment[c.num]||{};
+      const lvls=LEVELS.map(L=>{
+        const cur=a.current===L.c, tgt=a.target===L.c;
+        const cls=cur&&tgt?"is-both":cur?"is-current":tgt?"is-target":"";
+        const badge=cur?'<span class="badge cur">Now</span>':tgt?'<span class="badge tgt">Target</span>':"";
+        return `<div class="lvl ${cls}"><div class="code">L${L.c}<em>${L.n}</em></div><div>${c.lv[L.c]}${badge}</div></div>`;
+      }).join("");
+      const opt=sel=>LEVELS.map(L=>`<option value="${L.c}" ${sel===L.c?"selected":""}>L${L.c} · ${L.n}</option>`).join("");
+      const rate=[1,2,3,4,5].map(r=>`<button class="star ${a.confidence>=r?"on":""}" data-cap="${c.num}" data-rate="${r}">${r}</button>`).join("");
+      const auto=a.support===undefined&&reflLooksLikeRequest(a.reflection||"");
+      const reqHint=auto?`<span class="supp-hint">Auto-detected as a development request — included for PD. Untick if not.</span>`:"";
+      html+=`<div class="card" data-cap="${c.num}">
+        <div class="card-top">
+          <div class="cap-name"><span>${c.num}</span> ${c.name}</div>
+          <div class="meta"><span class="tag ${c.who}">${c.who==="teach"?"Teaching":"All staff"}</span><span class="dan">${c.dan}</span></div>
+          <div class="strands">${c.strands}</div>
+        </div>
+        <div class="card-body">
+          <div class="levels">${lvls}</div>
+          <div class="assess">
+            <div class="row2">
+              <div class="field" style="flex:1"><label>My current level</label>
+                <select data-cap="${c.num}" data-k="current"><option value="">—</option>${opt(a.current)}</select></div>
+              <div class="field" style="flex:1"><label>My target</label>
+                <select data-cap="${c.num}" data-k="target"><option value="">—</option>${opt(a.target)}</select></div>
+            </div>
+            <div class="field"><label>Reflection — how I do this now, or what I’ll do to grow</label>
+              <details class="ex"><summary>? need ideas — see examples</summary><div class="ex-body">${(REFEX[c.num]||["“A concrete example from your own practice.”"]).join("<br>")}</div></details>
+              <textarea data-cap="${c.num}" data-k="reflection" placeholder="An example from your practice, or what you’ll work on this cycle…">${a.reflection||""}</textarea>
+              <label class="supp"><input type="checkbox" data-cap="${c.num}" data-k="support" ${wantsSupport(a)?"checked":""}> I’d like PD support to develop this area</label>
+              ${reqHint}</div>
+            <div class="field" style="margin:0"><label>Confidence at my current level (1–5)</label><div class="rate">${rate}</div><span style="font-size:12px;color:var(--muted);display:block;margin-top:6px">How sure you are that you’re genuinely at the level you selected — 1 = still building, 5 = fully confident. A reflection point; it doesn’t change your goals or PD.</span><div class="mismatch" data-mm="${c.num}"></div></div>
+          </div>
+        </div></div>`;
+    });
+    html+=`</div></div>`;
+  });
+  $("caps").innerHTML=html;
+  bindIntake(); bindCaps(); updateProgress();
+  FRAMEWORK.forEach(d=>d.caps.forEach(c=>updateMismatch(c.num)));
+}
+function bindCaps(){
+  $("caps").querySelectorAll("select").forEach(s=>s.addEventListener("change",e=>{
+    const {cap,k}=e.target.dataset; const v=e.target.value?+e.target.value:undefined;
+    (state.assessment[cap]=state.assessment[cap]||{})[k]=v; refreshCard(cap); updateProgress(); updateMismatch(cap);
+  }));
+  $("caps").querySelectorAll("textarea").forEach(t=>t.addEventListener("input",e=>{
+    const {cap}=e.target.dataset; (state.assessment[cap]=state.assessment[cap]||{}).reflection=e.target.value;
+  }));
+  $("caps").querySelectorAll(".star").forEach(b=>b.addEventListener("click",e=>{
+    const {cap,rate}=e.target.dataset; (state.assessment[cap]=state.assessment[cap]||{}).confidence=+rate;
+    e.target.parentNode.querySelectorAll(".star").forEach(s=>s.classList.toggle("on",+s.dataset.rate<=+rate));
+    updateMismatch(cap);
+  }));
+  $("caps").querySelectorAll('input[type="checkbox"][data-k="support"]').forEach(cb=>cb.addEventListener("change",e=>{
+    const {cap}=e.target.dataset; (state.assessment[cap]=state.assessment[cap]||{}).support=e.target.checked;
+  }));
+}
+function refreshCard(cap){
+  const c=CAPBYNUM[cap], a=state.assessment[cap]||{}, card=$("caps").querySelector(`.card[data-cap="${cap}"] .levels`);
+  card.innerHTML=LEVELS.map(L=>{
+    const cur=a.current===L.c, tgt=a.target===L.c;
+    const cls=cur&&tgt?"is-both":cur?"is-current":tgt?"is-target":"";
+    const badge=cur?'<span class="badge cur">Now</span>':tgt?'<span class="badge tgt">Target</span>':"";
+    return `<div class="lvl ${cls}"><div class="code">L${L.c}<em>${L.n}</em></div><div>${c.lv[L.c]}${badge}</div></div>`;
+  }).join("");
+}
+function updateProgress(){
+  let done=0,gaps=0;
+  Object.values(state.assessment).forEach(a=>{if(a.current)done++; if(a.current&&a.target&&a.target>a.current)gaps++;});
+  const pct=Math.round(done/TOTALCAPS*100);
+  $("pct").textContent=pct; $("barfill").style.width=pct+"%"; $("gapcount").textContent=gaps;
+}
+
+/* ---------- TAB 2 ---------- */
+function gaps(){
+  const g=[];
+  FRAMEWORK.forEach(d=>d.caps.forEach(c=>{const a=state.assessment[c.num];
+    if(a&&a.current&&a.target&&a.target>a.current)g.push({cap:c.num,name:c.name,current:a.current,target:a.target});}));
+  return g;
+}
+function generateGoals(){
+  const all=[];
+  FRAMEWORK.forEach(d=>d.caps.forEach(c=>{
+    const a=state.assessment[c.num]||{};
+    const hasGap=a.current&&a.target&&a.target>a.current;
+    const wants=wantsSupport(a);
+    if(hasGap||wants) all.push({cap:c.num,name:c.name,current:a.current,target:a.target,gap:!!hasGap,requested:wants&&!hasGap,size:hasGap?(a.target-a.current):0,reflection:a.reflection||""});
+  }));
+  if(!all.length){toast("Set a target above your current level on Tab 1, or tick “I’d like PD support” on a capability");return;}
+  const n=parseInt(($("gncount")||{}).value||"3",10);
+  let gapGoals=all.filter(x=>x.gap).sort((a,b)=>b.size-a.size);
+  const totGaps=gapGoals.length;
+  if(n>0) gapGoals=gapGoals.slice(0,n);
+  const reqGoals=all.filter(x=>x.requested);
+  let chosen=gapGoals.concat(reqGoals);
+  const seen={}; chosen=chosen.filter(x=>seen[x.cap]?false:(seen[x.cap]=true));
+  const w=Math.floor(100/chosen.length); let rem=100-w*chosen.length;
+  state.goals=chosen.map((x,i)=>{
+    const c=CAPBYNUM[x.cap];
+    const snip=x.reflection?x.reflection.trim().replace(/\s+/g," ").slice(0,90):"";
+    let goal,objectives;
+    if(x.gap){
+      goal=`Progress “${x.name}” from L${x.current} (${LNAME[x.current]}) to L${x.target} (${LNAME[x.target]}).`;
+      objectives=c.lv[x.target].split(";")[0].replace(/^You\s+/,"Demonstrate that you ")+".";
+    } else {
+      goal=`Develop “${x.name}”${snip?` — ${snip}`:""}.`;
+      objectives=snip?`From your reflection: ${snip}.`:"Requested development support in this area.";
+    }
+    return {id:++state.goalSeq, cap:x.cap, name:x.name, current:x.current, target:x.target, requested:x.requested,
+      goal, weight:w+(i<rem?1:0), objectives,
+      kpi:`Observation and reflection confirm progress; impact visible in student work / data.`,
+      timeline:"End of cycle"};
+  });
+  renderGoals();
+  const nr=reqGoals.length;
+  toast(chosen.length+" goal"+(chosen.length>1?"s":"")+" drafted"+(nr?" ("+nr+" from your reflection request"+(nr>1?"s":"")+")":"")+(n>0&&totGaps>gapGoals.length?" — "+gapGoals.length+" largest of "+totGaps+" gaps":""));
+}
+function blankGoal(){state.goals.push({id:++state.goalSeq,cap:"",name:"",current:"",target:"",goal:"",weight:0,objectives:"",kpi:"",timeline:""});renderGoals();}
+function renderGoals(){
+  // sync profile inputs -> state on render
+  const body=$("goalbody");
+  if(!state.goals.length){body.innerHTML=`<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:26px">No goals yet — click <b>Analyse my self-assessment → suggest goals</b>, or add one manually.</td></tr>`;}
+  else{
+    body.innerHTML=state.goals.map(g=>`<tr data-id="${g.id}">
+      <td><textarea data-k="goal">${g.goal}</textarea></td>
+      <td><input class="wt" type="number" min="0" max="100" data-k="weight" value="${g.weight}"></td>
+      <td><textarea data-k="objectives">${g.objectives}</textarea></td>
+      <td><textarea data-k="kpi">${g.kpi}</textarea></td>
+      <td><input type="text" data-k="timeline" value="${g.timeline}"></td>
+      <td><button class="del" title="Remove" data-del="${g.id}">×</button></td></tr>`).join("");
+  }
+  body.querySelectorAll("[data-k]").forEach(inp=>inp.addEventListener("input",e=>{
+    const id=+e.target.closest("tr").dataset.id; const g=state.goals.find(x=>x.id===id);
+    const k=e.target.dataset.k; g[k]=k==="weight"?(+e.target.value||0):e.target.value;
+    if(k==="weight")wtTotal();
+  }));
+  body.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click",e=>{
+    state.goals=state.goals.filter(x=>x.id!==+e.target.dataset.del); renderGoals();
+  }));
+  wtTotal();
+}
+function wtTotal(){
+  const sum=state.goals.reduce((s,g)=>s+(+g.weight||0),0);
+  const el=$("wttotal"); el.innerHTML=`Total weighting: <b>${sum}%</b>${sum===100?" ✓":` (should be 100%)`}`;
+  el.className="wt-total"+(sum!==100&&state.goals.length?" bad":"");
+}
+
+/* uploads */
+$("uploadbtn").addEventListener("click",()=>$("fileinput").click());
+$("fileinput").addEventListener("change",e=>{
+  [...e.target.files].forEach(f=>state.documents.push(f.name)); e.target.value=""; renderFiles();
+});
+function renderFiles(){
+  $("filelist").innerHTML=state.documents.map((n,i)=>`<li>📄 ${n}<span class="x" data-fi="${i}">remove</span></li>`).join("");
+  $("filelist").querySelectorAll(".x").forEach(x=>x.addEventListener("click",e=>{
+    state.documents.splice(+e.target.dataset.fi,1); renderFiles();
+  }));
+}
+
+/* profile binding */
+function bindProfile(){
+  const map={"p-name":"name","p-qual":"qual","p-cert":"cert","p-exp":"exp"};
+  Object.entries(map).forEach(([id,k])=>{const el=$(id); if(el)el.addEventListener("input",e=>state.profile[k]=e.target.value);});
+}
+
+/* save / submit */
+$("save").addEventListener("click",()=>{
+  syncProfile();
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob); const a=document.createElement("a");
+  a.href=url; a.download=`PD_plan_${(state.profile.name||"staff").replace(/\s+/g,"_")}.json`; a.click();
+  URL.revokeObjectURL(url); toast("Plan downloaded as JSON");
+});
+$("submit").addEventListener("click",()=>{
+  syncProfile();
+  const missing=[];
+  if(!state.profile.name) missing.push("your name (top right)");
+  if(!state.profile.role) missing.push("your role (page 1)");
+  if(!state.profile.supervisor) missing.push("your supervisor’s name (page 1)");
+  if(!state.profile.supEmail) missing.push("your supervisor’s email (page 1)");
+  else if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(state.profile.supEmail)) missing.push("a valid supervisor email (page 1)");
+  if(!state.goals.length) missing.push("at least one development goal (page 2)");
+  if(missing.length){ const bw=$("submitbanner"); bw.className="banner warn"; bw.innerHTML=`Before submitting, please complete: ${missing.join("; ")}.`; toast("Some required details are missing"); return; }
+  state.submitted=true;
+  const added=[],dev=[];
+  Object.entries(state.pdDecisions).forEach(([k,v])=>{const m=PDMSG[k]; if(!m)return; if(v==="have")added.push(m.t); else if(v==="develop")dev.push(m.t);});
+  const goalsTxt=state.goals.map((g,i)=>`${i+1}. ${g.goal} (weight ${g.weight}%)`).join("\n");
+  const lines=[
+    `Dear ${state.profile.supervisor||"[supervisor]"},`,``,
+    `Please find my development plan for review.`,``,
+    `Name: ${state.profile.name||"[name]"}`,
+    `Role / title: ${(ROLES[state.profile.role]||"")}${state.profile.title?" \u2014 "+state.profile.title:""}`,``,
+    `DEVELOPMENT GOALS`, goalsTxt||"(none)",``,
+    `PD ALREADY IN OUR LIBRARY (to add to my plan):`, added.length?added.map(t=>"\u2022 "+t).join("\n"):"(none yet)",``,
+    `PD TO BE DEVELOPED OR SOURCED (for discussion / PD time in our meeting):`, dev.length?dev.map(t=>"\u2022 "+t).join("\n"):"(none)",``,
+    `I\u2019d like to discuss these and agree PD time in our review meeting.`,``,`Thank you,`, state.profile.name||""
+  ];
+  const body=lines.join("\n");
+  const subj=`Development plan for review \u2014 ${state.profile.name||"staff"} (Cycle 2025\u20132026)`;
+  const b=$("submitbanner"); b.className="banner ok";
+  if(state.profile.supEmail){
+    window.location.href=`mailto:${state.profile.supEmail}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
+    b.innerHTML=`\u2713 Plan ready to send to ${state.profile.supervisor||"your supervisor"} (${state.profile.supEmail}) \u2014 your email app should open with the goals and PD summary. In the live platform this also notifies them and locks the plan pending your review meeting.`;
+  } else {
+    b.innerHTML=`\u2713 Plan submitted${state.profile.name?", "+state.profile.name:""}. Add your supervisor\u2019s email on the first screen to send it to them directly. In the live platform this notifies your line manager and locks the plan pending the review meeting.`;
+  }
+  toast("Plan submitted for review");
+});
+function syncProfile(){
+  const set=(k,id)=>{const e=$(id); if(e) state.profile[k]=e.value;};
+  set("name","p-name");set("qual","p-qual");set("cert","p-cert");set("exp","p-exp");
+  set("supEmail","p-sup");set("supervisor","in-supname");set("title","in-title");
+}
+
+$("gen").addEventListener("click",generateGoals);
+$("addgoal").addEventListener("click",blankGoal);
+
+/* ---------- TAB 3 ---------- */
+let PDMSG={};
+function pdMsg(title,ty){
+  return `Subject: PD to be developed — ${title} (${ty})
+
+Dear Supervisor,
+
+The professional development "${title}" is recommended in the IPS PD catalogue (type: ${ty}) but is not currently in our PD library. ${ty==="Mandatory"?"As a mandatory requirement, it needs to be made available.":"I would like to request that it be developed or sourced so it can be added to my plan."}
+
+Thank you,
+${state.profile.name||"[name]"}`;
+}
+function pdCard(key,p,comment){
+  PDMSG[key]={t:p.t,ty:p.ty};
+  const pill=`<span class="pill${p.ty==="Mandatory"?" mand":""}">${p.ty}</span>`;
+  const dec=state.pdDecisions[key];
+  let action;
+  if(dec==="have"){
+    action=`<div style="background:#e7f1e2;border:1px solid #bcd6ac;color:#2f5320;border-radius:9px;padding:9px 12px;font-size:13.5px;font-weight:600;display:flex;gap:10px;align-items:center;flex-wrap:wrap">✓ Added to your 2025–2026 plan <span style="font-weight:400;color:#5b7a4f">— a direct link to the library course will sit here</span> <button class="btn ghost sm" data-key="${key}" data-dec="reset">change</button></div>`;
+  } else if(dec==="develop"){
+    const mailto=`mailto:${state.profile.supEmail||""}?subject=${encodeURIComponent("PD to be developed — "+p.t+" ("+p.ty+")")}&body=${encodeURIComponent(pdMsg(p.t,p.ty))}`;
+    action=`<div class="ext"><div class="t">Not in our library — to be developed (${p.ty})</div><div class="msg">${pdMsg(p.t,p.ty)}</div><div style="margin-top:9px;display:flex;gap:8px;flex-wrap:wrap"><a class="btn accent sm" href="${mailto}">✉ Notify supervisor</a><button class="btn ghost sm" data-copy="${key}">Copy message</button><button class="btn ghost sm" data-key="${key}" data-dec="reset">change</button></div></div>`;
+  } else {
+    action=`<div style="font-size:13.5px;font-weight:600;display:flex;gap:8px;align-items:center;flex-wrap:wrap">Do we have this in our PD library? <button class="btn primary sm" data-key="${key}" data-dec="have">Yes — add to my plan</button> <button class="btn ghost sm" data-key="${key}" data-dec="develop">No</button></div>`;
+  }
+  return `<div class="pd"><div class="pd-h"><span class="g">${p.t}</span> ${pill} <span class="pill">${p.dl}</span></div><div class="pd-body"><div style="font-size:12.5px;color:var(--muted);margin-bottom:9px">${comment}</div>${action}</div></div>`;
+}
+function renderPD(){
+  syncProfile(); PDMSG={};
+  let body=`<h3 style="font-family:var(--font-d);color:var(--navy);font-size:18px;margin:14px 0 4px">Mandatory PD — required, regardless of goals</h3>`;
+  MAND.filter(p=>whoAppliesToRole(p.who,state.profile.role)).forEach(p=>{ const i=CATALOGUE.indexOf(p); body+=pdCard("M|"+i,p,`Required ${p.who.toLowerCase()} training · ${DOMLABEL[p.c]} · Type: Mandatory`); });
+  body+=`<h3 style="font-family:var(--font-d);color:var(--navy);font-size:18px;margin:26px 0 4px">PD for your development goals</h3>`;
+  if(!state.goals.length){
+    body+=`<div class="empty">No goals yet — add them in Tab 2 and your development PD will appear here.</div>`;
+  } else {
+    state.goals.forEach(g=>{
+      if(!g.cap){ return; }
+      body+=`<div style="font-family:var(--font-d);font-weight:600;font-size:15px;margin:16px 0 2px;color:var(--ink)">${g.name} <span class="move">${g.current&&g.target&&g.target>g.current?`L${g.current} → L${g.target}`:(g.requested?"requested":(g.current?`at L${g.current}`:""))}</span></div>`;
+      const recs=recsForCap(g.cap);
+      if(!recs.length){
+        body+=`<div class="empty" style="padding:14px">Beyond the mandatory training above, no catalogue PD is mapped to this capability yet — flag it if you would like one developed.</div>`;
+      } else {
+        recs.forEach(p=>{ const idx=CATALOGUE.indexOf(p); body+=pdCard("G|"+g.id+"|"+idx,p,`From the recommended PD for ${CAPDOM[g.cap]} · capability ${g.cap} · ${g.target?`your target L${g.target} · `:""}Type: ${p.ty}`); });
+      }
+    });
+  }
+  const total=Object.keys(PDMSG).length;
+  const decs=Object.values(state.pdDecisions);
+  const have=decs.filter(x=>x==="have").length, dev=decs.filter(x=>x==="develop").length;
+  const summary=`<div style="background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-size:13.5px;margin-bottom:12px">✓ <b>${have}</b> added to your plan · ⚠ <b>${dev}</b> flagged to develop · <b>${Math.max(total-have-dev,0)}</b> still to review</div>`;
+  $("pdout").innerHTML=summary+body;
+  $("pdout").querySelectorAll("[data-dec]").forEach(b=>b.addEventListener("click",e=>{
+    const t=e.currentTarget, key=t.dataset.key, dec=t.dataset.dec;
+    if(dec==="reset") delete state.pdDecisions[key]; else state.pdDecisions[key]=dec;
+    renderPD();
+  }));
+  $("pdout").querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",e=>{
+    const m=PDMSG[e.currentTarget.dataset.copy]; if(!m)return;
+    navigator.clipboard.writeText(pdMsg(m.t,m.ty)).then(()=>toast("Message copied")).catch(()=>toast("Copy not available"));
+  }));
+}
+
+function printPlan(){ syncProfile(); renderGoals(); renderPD(); window.print(); }
+
+/* ---------- INIT ---------- */
+$("printbtn").addEventListener("click",printPlan);
+bindProfile(); renderCaps();
+</script>
+</body>
+</html>
